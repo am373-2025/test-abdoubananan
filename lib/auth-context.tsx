@@ -45,7 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signUp = async (email: string, password: string, fullName: string) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -55,6 +55,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       },
     })
     if (error) throw error
+
+    // Créer le profil utilisateur si l'inscription réussit
+    if (data.user) {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: data.user.id,
+          email: data.user.email!,
+          full_name: fullName,
+          is_premium: false,
+          premium_plan: 'free'
+        })
+      
+      // Ne pas échouer si le profil existe déjà
+      if (profileError && !profileError.message.includes('duplicate key')) {
+        console.warn('Erreur lors de la création du profil:', profileError)
+      }
+    }
   }
 
   const signOut = async () => {

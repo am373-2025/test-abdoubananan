@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { User, Settings, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,13 +18,14 @@ import { useAuthModal } from '@/lib/auth-modal-context'
 export function UserMenu() {
   const { user, signOut } = useAuth()
   const { openModal } = useAuthModal()
+  const router = useRouter()
   const [isSigningOut, setIsSigningOut] = useState(false)
 
   const handleSignOut = async () => {
     setIsSigningOut(true)
     try {
       await signOut()
-      window.location.href = '/'
+      router.push('/')
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error)
     } finally {
@@ -58,10 +61,10 @@ export function UserMenu() {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <a href="/profile" className="flex items-center">
+          <Link href="/profile" className="flex items-center">
             <User className="mr-2 h-4 w-4" />
             Profil
-          </a>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Settings className="mr-2 h-4 w-4" />

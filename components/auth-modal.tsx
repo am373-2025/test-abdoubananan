@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,6 +12,7 @@ import { useAuthModal } from '@/lib/auth-modal-context'
 export function AuthModal() {
   const { signIn, signUp } = useAuth()
   const { isOpen, closeModal } = useAuthModal()
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -27,7 +29,7 @@ export function AuthModal() {
       await signIn(email, password)
       closeModal()
       // Redirection vers la caméra après connexion
-      window.location.href = '/?camera=true'
+      router.push('/?camera=true')
     } catch (error: any) {
       setError(error.message)
     } finally {
@@ -50,8 +52,8 @@ export function AuthModal() {
       closeModal()
       // Redirection vers la caméra après inscription (avec délai pour voir le message)
       setTimeout(() => {
-        window.location.href = '/?camera=true'
-      }, 2000)
+        router.push('/?camera=true')
+      }, 1000)
     } catch (error: any) {
       setError(error.message)
     } finally {
