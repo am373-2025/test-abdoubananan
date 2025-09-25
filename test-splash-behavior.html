@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Splash Screen Behavior</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .test-button.danger {
+            background: #f44336;
+        }
+        .test-button.danger:hover {
+            background: #da190b;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test du Comportement du Splash Screen</h1>
+    
+    <div class="test-section">
+        <h2>📊 Statut Actuel</h2>
+        <div id="status" class="status">
+            <strong>Statut du localStorage:</strong> <span id="launch-status">Vérification...</span>
+        </div>
+        <div class="code">
+            localStorage.getItem('app-has-launched'): <span id="localStorage-value">-</span>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎬 Tests de Navigation</h2>
+        <p>Testez les différents scénarios de navigation :</p>
+        
+        <button class="test-button" onclick="testNormalNavigation()">
+            🏠 Navigation Normale
+        </button>
+        
+        <button class="test-button" onclick="testCameraNavigation()">
+            📷 Navigation Caméra
+        </button>
+        
+        <button class="test-button" onclick="testForceSplash()">
+            🎬 Forcer Splash Screen
+        </button>
+        
+        <button class="test-button danger" onclick="resetSplashBehavior()">
+            🔄 Réinitialiser Comportement
+        </button>
+    </div>
+
+    <div class="test-section">
+        <h2>📋 Instructions de Test</h2>
+        <ol>
+            <li><strong>Premier lancement:</strong> Cliquez sur "Réinitialiser Comportement" puis "Navigation Normale"</li>
+            <li><strong>Navigation suivante:</strong> Cliquez à nouveau sur "Navigation Normale" (pas de splash)</li>
+            <li><strong>Accès caméra:</strong> Cliquez sur "Navigation Caméra" (pas de splash même au premier lancement)</li>
+            <li><strong>Force splash:</strong> Cliquez sur "Forcer Splash Screen" (splash même si déjà lancé)</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 URLs de Test</h2>
+        <div class="code">
+            Navigation normale: <a href="http://localhost:3000" target="_blank">http://localhost:3000</a><br>
+            Navigation caméra: <a href="http://localhost:3000/?camera=true" target="_blank">http://localhost:3000/?camera=true</a><br>
+            Force splash: <a href="http://localhost:3000/?splash=true" target="_blank">http://localhost:3000/?splash=true</a>
+        </div>
+    </div>
+
+    <script>
+        function updateStatus() {
+            const hasLaunched = localStorage.getItem('app-has-launched');
+            const statusElement = document.getElementById('launch-status');
+            const valueElement = document.getElementById('localStorage-value');
+            
+            if (hasLaunched === 'true') {
+                statusElement.textContent = 'Application déjà lancée (pas de splash)';
+                statusElement.style.color = '#4CAF50';
+            } else {
+                statusElement.textContent = 'Premier lancement (splash affiché)';
+                statusElement.style.color = '#FF9800';
+            }
+            
+            valueElement.textContent = hasLaunched || 'null';
+        }
+
+        function testNormalNavigation() {
+            window.open('http://localhost:3000', '_blank');
+        }
+
+        function testCameraNavigation() {
+            window.open('http://localhost:3000/?camera=true', '_blank');
+        }
+
+        function testForceSplash() {
+            window.open('http://localhost:3000/?splash=true', '_blank');
+        }
+
+        function resetSplashBehavior() {
+            localStorage.removeItem('app-has-launched');
+            updateStatus();
+            alert('Comportement du splash screen réinitialisé !\nLe prochain lancement affichera le splash screen.');
+        }
+
+        // Mettre à jour le statut au chargement
+        updateStatus();
+        
+        // Mettre à jour le statut toutes les secondes
+        setInterval(updateStatus, 1000);
+    </script>
+</body>
+</html>
